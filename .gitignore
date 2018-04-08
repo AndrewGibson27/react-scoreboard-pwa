@@ -1,0 +1,10 @@
+.*
+!.gitignore
+!.eslintrc
+!.babelrc
+!.editorconfig
+*.log
+
+node_modules/
+dist/
+build/
