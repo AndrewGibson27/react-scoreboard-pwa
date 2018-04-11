@@ -1,16 +1,22 @@
+import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import Loadable from 'react-loadable';
-import { StaticRouter } from 'react-router-dom';
 import { getBundles } from 'react-loadable/webpack';
+import { StaticRouter, matchPath } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { combineReducers, createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 import express from 'express';
 import bodyParser from 'body-parser';
 import webpack from 'webpack'; // eslint-disable-line
 import hotMiddleware from 'webpack-hot-middleware'; // eslint-disable-line
 import devMiddleware from 'webpack-dev-middleware'; // eslint-disable-line
 
-import App from '../App';
+import App from '../App'; // eslint-disable-line
 import config from '../config';
+import routes from '../routes';
+import reducer from '../store/admin/reducers';
 import webpackBaseConfig from '../../webpack/base';
 import webpackDevConfig from '../../webpack/client.dev';
 import stats from '../../build/react-loadable.json';
@@ -34,7 +40,28 @@ if (isDev) {
   }));
 }
 
-app.get('*', (req, res) => {
+app.get('*', async (req, res) => {
+  const store = createStore(
+    combineReducers({ firstState: reducer }),
+    {},
+    applyMiddleware(thunk),
+  );
+
+  const promises = routes.map(({ path, exact, component }) => {
+    const foundPath = matchPath(req.url, {
+      path,
+      exact,
+      strict: false,
+    });
+
+    if (foundPath && component && component.fetchData) {
+      return component.fetchData(foundPath.params, store);
+    }
+    return new Promise(resolve => resolve());
+  });
+
+  await Promise.all(promises);
+
   const modules = [];
   const context = {};
   const initialComponents = (
@@ -45,7 +72,9 @@ app.get('*', (req, res) => {
         location={req.url}
         context={context}
       >
-        <App />
+        <Provider store={store}>
+          <App />
+        </Provider>
       </StaticRouter>
     </Loadable.Capture>
   );
@@ -53,7 +82,6 @@ app.get('*', (req, res) => {
   const content = ReactDOM.renderToString(initialComponents);
   const syncBundles = manifest.entrypoints.main.js;
   const asyncBundles = getBundles(stats, modules);
-  // <script>window.__APOLLO_STATE__ = ${JSON.stringify(initialState)};</script>
 
   res.send(`
     <!DOCTYPE html>
@@ -67,8 +95,9 @@ app.get('*', (req, res) => {
       <body>
         <div id="root">${content}</div>
         ${syncBundles.map(script => `<script src="${isDev ? '/' : PUBLIC_PATH}${script}"></script>`).join('\n')}
-        ${asyncBundles.map(script => `<script src="${PUBLIC_PATH}${script.file}"></script>`).join('\n')}
+        ${asyncBundles.map(script => `<script src="${isDev ? '/' : PUBLIC_PATH}${script.file}"></script>`).join('\n')}
         <script>window.startApp();</script>
+        <script>window.INITIAL_STATE = ${JSON.stringify(store.getState())};</script>
       </body>
     </html>
   `);
