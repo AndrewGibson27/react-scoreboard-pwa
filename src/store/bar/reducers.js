@@ -4,7 +4,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case 'ADMIN':
+    case 'BAR':
       return { data: action.data };
     default:
       return state;

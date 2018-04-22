@@ -1,16 +1,22 @@
 import AdminRoute from './admin';
-import FooRoute from './foo';
+import FooNavRoute from './foo/nav';
+import FooMainRoute from './foo/main';
 
 export default [
   {
     path: '/',
     exact: true,
-    component: AdminRoute,
+    components: [
+      AdminRoute,
+    ],
   },
 
   {
     path: '/foo',
-    exact: true,
-    component: FooRoute,
+    exact: false,
+    components: [
+      FooNavRoute,
+      FooMainRoute,
+    ],
   },
 ];

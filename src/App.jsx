@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import Loadable from 'react-loadable';
 
 const Loader = () => (
@@ -11,14 +11,25 @@ const AdminRoute = Loadable({
   loading: Loader,
 });
 
-const FooRoute = Loadable({
-  loader: () => import('./routes/foo'),
+const FooNavRoute = Loadable({
+  loader: () => import('./routes/foo/nav'),
+  loading: Loader,
+});
+
+const FooMainRoute = Loadable({
+  loader: () => import('./routes/foo/main'),
   loading: Loader,
 });
 
 export default () => (
-  <Switch>
-    <Route exact path="/" component={AdminRoute} />
-    <Route path="/foo" component={FooRoute} />
-  </Switch>
+  <main>
+    <nav>
+      <Route path="/foo" component={FooNavRoute} />
+    </nav>
+    <Switch>
+      <Route path="/" exact component={AdminRoute} />
+      <Route path="/foo" component={FooMainRoute} />
+      <Redirect to="/" />
+    </Switch>
+  </main>
 );

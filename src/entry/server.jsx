@@ -16,7 +16,9 @@ import devMiddleware from 'webpack-dev-middleware'; // eslint-disable-line
 import App from '../App'; // eslint-disable-line
 import config from '../config';
 import routes from '../routes';
-import reducer from '../store/admin/reducers';
+import adminReducer from '../store/admin/reducers';
+import barReducer from '../store/bar/reducers';
+import bazReducer from '../store/baz/reducers';
 import webpackBaseConfig from '../../webpack/base';
 import webpackDevConfig from '../../webpack/client.dev';
 import stats from '../../build/react-loadable.json';
@@ -42,29 +44,35 @@ if (isDev) {
 
 app.get('*', async (req, res) => {
   const store = createStore(
-    combineReducers({ firstState: reducer }),
+    combineReducers({
+      adminState: adminReducer,
+      barState: barReducer,
+      bazState: bazReducer,
+    }),
     {},
     applyMiddleware(thunk),
   );
 
-  const promises = routes.map(({ path, exact, component }) => {
-    const foundPath = matchPath(req.url, {
-      path,
-      exact,
-      strict: false,
-    });
+  const fetchers = routes.map(({ path, exact, components }) => {
+    const foundPath = matchPath(req.url, { path, exact, strict: false });
 
-    if (foundPath && component && component.fetchData) {
-      return component.fetchData(foundPath.params, store);
+    if (foundPath && components.length) {
+      return components.map((component) => {
+        if (component.fetchData) {
+          return component.fetchData(foundPath.params, store);
+        }
+        return null;
+      });
     }
-    return new Promise(resolve => resolve());
+    return null;
   });
 
-  await Promise.all(promises);
+  fetchers.filter(fetcher => !!fetcher);
+  await Promise.all(fetchers);
 
   const modules = [];
   const context = {};
-  const initialComponents = (
+  const initialTree = (
     <Loadable.Capture
       report={moduleName => modules.push(moduleName)}
     >
@@ -79,7 +87,7 @@ app.get('*', async (req, res) => {
     </Loadable.Capture>
   );
 
-  const content = ReactDOM.renderToString(initialComponents);
+  const content = ReactDOM.renderToString(initialTree);
   const syncBundles = manifest.entrypoints.main.js;
   const asyncBundles = getBundles(stats, modules);
 
