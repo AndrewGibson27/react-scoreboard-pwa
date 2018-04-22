@@ -9,8 +9,6 @@ import Loadable from 'react-loadable';
 import config from '../config';
 import App from '../App';
 
-const { isDev } = config;
-
 const doPreload = async () => {
   await Loadable.preloadReady();
   hydrate(
@@ -21,10 +19,4 @@ const doPreload = async () => {
   );
 };
 
-if (isDev) {
-  module.hot.accept();
-  window.startApp = () => {};
-  doPreload();
-} else {
-  window.startApp = () => { doPreload(); };
-}
+window.startApp = () => { doPreload(); };

@@ -36,6 +36,7 @@ module.exports = {
     new WebpackAssetsManifest({
       entrypoints: true,
       output: path.join(SERVER_OUTPUT, 'manifest.json'),
+      writeToDisk: true,
     }),
   ],
 

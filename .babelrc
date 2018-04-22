@@ -1,10 +1,25 @@
 {
-  "presets": [
-    ["env", { "modules": false }],
-    "react"
-  ],
-  "plugins": [
-    "syntax-dynamic-import",
-    "react-loadable/babel"
-  ]
+  "env": {
+    "development": {
+      "presets": [
+        "env",
+        "react"
+      ],
+      "plugins": [
+        "syntax-dynamic-import",
+        "react-loadable/babel",
+        "dynamic-import-node"
+      ]
+    },
+    "production": {
+      "presets": [
+        ["env", { "modules": false }],
+        "react"
+      ],
+      "plugins": [
+        "syntax-dynamic-import",
+        "react-loadable/babel"
+      ]
+    }
+  }
 }

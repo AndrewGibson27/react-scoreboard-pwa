@@ -7,17 +7,17 @@ const Loader = () => (
 );
 
 const AdminRoute = Loadable({
-  loader: () => import('./routes/admin'),
+  loader: () => import(/* webpackChunkName: "adminRoute" */ './routes/admin').then(object => object.default),
   loading: Loader,
 });
 
 const FooNavRoute = Loadable({
-  loader: () => import('./routes/foo/nav'),
+  loader: () => import(/* webpackChunkName: "fooNavRoute" */ './routes/foo/nav').then(object => object.default),
   loading: Loader,
 });
 
 const FooMainRoute = Loadable({
-  loader: () => import('./routes/foo/main'),
+  loader: () => import(/* webpackChunkName: "fooMainRoute" */ './routes/foo/main').then(object => object.default),
   loading: Loader,
 });
 

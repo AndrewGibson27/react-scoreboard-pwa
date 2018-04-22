@@ -1,3 +1,5 @@
+/* eslint-disable global-require */
+
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
@@ -21,8 +23,6 @@ import barReducer from '../store/bar/reducers';
 import bazReducer from '../store/baz/reducers';
 import webpackBaseConfig from '../../webpack/base';
 import webpackDevConfig from '../../webpack/client.dev';
-import stats from '../../build/react-loadable.json';
-import manifest from '../../build/manifest.json';
 
 const { port, isDev } = config;
 const { PUBLIC_PATH } = webpackBaseConfig;
@@ -86,6 +86,9 @@ app.get('*', async (req, res) => {
       </StaticRouter>
     </Loadable.Capture>
   );
+
+  const stats = require('../../build/react-loadable.json');
+  const manifest = require('../../build/manifest.json');
 
   const content = ReactDOM.renderToString(initialTree);
   const syncBundles = manifest.entrypoints.main.js;
