@@ -1,22 +1,22 @@
-import AdminRoute from './admin';
-import FooNavRoute from './foo/nav';
-import FooMainRoute from './foo/main';
+import adminCriticalFetcher from './admin/criticalFetch';
+import fooNavCriticalFetcher from './foo/nav/criticalFetch';
+import fooMainCriticalFetcher from './foo/main/criticalFetch';
 
 export default [
   {
     path: '/',
     exact: true,
-    components: [
-      AdminRoute,
+    criticalFetchers: [
+      adminCriticalFetcher,
     ],
   },
 
   {
     path: '/foo',
     exact: false,
-    components: [
-      FooNavRoute,
-      FooMainRoute,
+    criticalFetchers: [
+      fooNavCriticalFetcher,
+      fooMainCriticalFetcher,
     ],
   },
 ];

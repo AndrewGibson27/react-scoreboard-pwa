@@ -1,11 +1,10 @@
 /* eslint-disable global-require */
 
-import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import Loadable from 'react-loadable';
 import { getBundles } from 'react-loadable/webpack';
-import { StaticRouter, matchPath } from 'react-router-dom';
+import { StaticRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -17,10 +16,11 @@ import devMiddleware from 'webpack-dev-middleware'; // eslint-disable-line
 
 import App from '../App'; // eslint-disable-line
 import config from '../config';
-import routes from '../routes';
 import adminReducer from '../store/admin/reducers';
 import barReducer from '../store/bar/reducers';
 import bazReducer from '../store/baz/reducers';
+import contextReducer from '../store/context/reducers';
+import getDataFetchers from '../utils/getDataFetchers';
 import webpackBaseConfig from '../../webpack/base';
 import webpackDevConfig from '../../webpack/client.dev';
 
@@ -42,76 +42,62 @@ if (isDev) {
   }));
 }
 
-app.get('*', async (req, res) => {
+app.get('*', (req, res) => {
   const store = createStore(
     combineReducers({
       adminState: adminReducer,
       barState: barReducer,
       bazState: bazReducer,
+      context: contextReducer,
     }),
     {},
     applyMiddleware(thunk),
   );
+  const fetchers = getDataFetchers(req.url, store);
 
-  const fetchers = routes.map(({ path, exact, components }) => {
-    const foundPath = matchPath(req.url, { path, exact, strict: false });
-
-    if (foundPath && components.length) {
-      return components.map((component) => {
-        if (component.fetchData) {
-          return component.fetchData(foundPath.params, store);
-        }
-        return null;
-      });
-    }
-    return null;
-  });
-
-  fetchers.filter(fetcher => !!fetcher);
-  await Promise.all(fetchers);
-
-  const modules = [];
-  const context = {};
-  const initialTree = (
-    <Loadable.Capture
-      report={moduleName => modules.push(moduleName)}
-    >
-      <StaticRouter
-        location={req.url}
-        context={context}
+  Promise.all(fetchers).then(() => {
+    const modules = [];
+    const context = {};
+    const initialTree = (
+      <Loadable.Capture
+        report={moduleName => modules.push(moduleName)}
       >
-        <Provider store={store}>
-          <App />
-        </Provider>
-      </StaticRouter>
-    </Loadable.Capture>
-  );
+        <StaticRouter
+          location={req.url}
+          context={context}
+        >
+          <Provider store={store}>
+            <App />
+          </Provider>
+        </StaticRouter>
+      </Loadable.Capture>
+    );
 
-  const stats = require('../../build/react-loadable.json');
-  const manifest = require('../../build/manifest.json');
+    const stats = require('../../build/react-loadable.json');
+    const manifest = require('../../build/manifest.json');
 
-  const content = ReactDOM.renderToString(initialTree);
-  const syncBundles = manifest.entrypoints.main.js;
-  const asyncBundles = getBundles(stats, modules);
+    const content = ReactDOM.renderToString(initialTree);
+    const syncBundles = manifest.entrypoints.main.js;
+    const asyncBundles = getBundles(stats, modules);
 
-  res.send(`
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>React Boilerplate</title>
-      </head>
-      <body>
-        <div id="root">${content}</div>
-        ${syncBundles.map(script => `<script src="${isDev ? '/' : PUBLIC_PATH}${script}"></script>`).join('\n')}
-        ${asyncBundles.map(script => `<script src="${isDev ? '/' : PUBLIC_PATH}${script.file}"></script>`).join('\n')}
-        <script>window.startApp();</script>
-        <script>window.INITIAL_STATE = ${JSON.stringify(store.getState())};</script>
-      </body>
-    </html>
-  `);
+    res.send(`
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <meta http-equiv="X-UA-Compatible" content="ie=edge">
+          <title>React Boilerplate</title>
+        </head>
+        <body>
+          <div id="root">${content}</div>
+          <script>window.INITIAL_STATE = ${JSON.stringify(store.getState())};</script>
+          ${asyncBundles.map(script => `<script src="${isDev ? '/' : PUBLIC_PATH}${script.file}"></script>`).join('\n')}
+          ${syncBundles.map(script => `<script src="${isDev ? '/' : PUBLIC_PATH}${script}"></script>`).join('\n')}
+        </body>
+      </html>
+    `);
+  });
 });
 
 Loadable.preloadAll().then(() => {
