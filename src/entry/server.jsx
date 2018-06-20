@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import express from 'express';
+import graphqlHTTP from 'express-graphql';
 import bodyParser from 'body-parser';
 import webpack from 'webpack'; // eslint-disable-line
 import hotMiddleware from 'webpack-hot-middleware'; // eslint-disable-line
@@ -16,6 +17,8 @@ import devMiddleware from 'webpack-dev-middleware'; // eslint-disable-line
 
 import App from '../App'; // eslint-disable-line
 import config from '../config';
+import initDb from '../db';
+import schema from '../api';
 import adminReducer from '../store/admin/reducers';
 import barReducer from '../store/bar/reducers';
 import bazReducer from '../store/baz/reducers';
@@ -30,7 +33,7 @@ const compiler = webpack(webpackDevConfig);
 const app = express();
 
 app.use(express.static('public'));
-app.use('/graphql', bodyParser.json());
+app.use('/graphql', bodyParser.json(), graphqlHTTP({ schema, graphiql: true }));
 app.set('view engine', 'pug');
 app.set('port', port);
 
@@ -100,15 +103,17 @@ app.get('*', (req, res) => {
   });
 });
 
-Loadable.preloadAll().then(() => {
-  // eslint-disable-next-line consistent-return
-  app.listen(port, 'localhost', (err) => {
-    if (err) {
-      if (isDev) {
-        console.log(err); // eslint-disable-line
+initDb().then(() => {
+  Loadable.preloadAll().then(() => {
+    // eslint-disable-next-line consistent-return
+    app.listen(port, 'localhost', (err) => {
+      if (err) {
+        if (isDev) {
+          console.log(err); // eslint-disable-line
+        }
+        return false;
       }
-      return false;
-    }
-    console.log(`Listening at http://localhost:${port}`); // eslint-disable-line
+      console.log(`Listening at http://localhost:${port}`); // eslint-disable-line
+    });
   });
 });
