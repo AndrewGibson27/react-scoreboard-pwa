@@ -7,7 +7,7 @@ const gameSchema = Schema({
     info: { type: Schema.Types.ObjectId, ref: 'Team' },
     winner: Boolean,
   },
-  awayteam: {
+  awayTeam: {
     info: { type: Schema.Types.ObjectId, ref: 'Team' },
     winner: Boolean,
   },

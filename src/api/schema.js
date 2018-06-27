@@ -4,7 +4,7 @@ const typeDefs = `
     name: String!
   }
 
-  type TeamWithStatus {
+  type TeamWithWinner {
     _id: ID!
     name: String!
     winner: Boolean!
@@ -12,8 +12,8 @@ const typeDefs = `
 
   type Game {
     _id: ID!
-    homeTeam: TeamWithStatus!
-    awayTeam: TeamWithStatus!
+    homeTeam: TeamWithWinner!
+    awayTeam: TeamWithWinner!
     homeScore: Int!
     awayScore: Int!
     period: Int!
@@ -52,7 +52,7 @@ const typeDefs = `
       isInProgress: Boolean
       isFinal: Boolean
       date: String
-    ): Team!
+    ): Game!
   }
 `;
 

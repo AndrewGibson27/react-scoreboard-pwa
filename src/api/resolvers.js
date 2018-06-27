@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+/* eslint-disable no-underscore-dangle, no-param-reassign */
 
 import Team from '../db/team';
 import Game from '../db/game';
@@ -48,7 +48,31 @@ const resolvers = {
         date,
       });
 
-      return game.save();
+      return game.save().then(({ _id }) => (
+        Game.findOne({ _id })
+          .populate({ path: 'homeTeam.info' })
+          .populate({ path: 'awayTeam.info' })
+          .lean()
+          .exec()
+          .then((populatedGame) => {
+            const { homeTeam: popHome, awayTeam: popAway } = populatedGame;
+            const { info: homeInfo, winner: homeWinner } = popHome;
+            const { info: awayInfo, winner: awayWinner } = popAway;
+
+            populatedGame.homeTeam = {
+              _id: homeInfo._id,
+              name: homeInfo.name,
+              winner: homeWinner,
+            };
+            populatedGame.awayTeam = {
+              _id: awayInfo._id,
+              name: awayInfo.name,
+              winner: awayWinner,
+            };
+
+            return populatedGame;
+          })
+      ));
     },
   },
 };
