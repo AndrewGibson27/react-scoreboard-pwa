@@ -61,8 +61,18 @@ const typeDefs = `
       input: TeamInput!
     ): Team!
 
+    updateTeam(
+      input: TeamInput!
+      _id: ID!
+    ): Team!
+
     createGame(
       input: GameInput!
+    ): Game!
+
+    updateGame(
+      input: GameInput!
+      _id: ID!
     ): Game!
   }
 `;
