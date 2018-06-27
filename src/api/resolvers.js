@@ -5,39 +5,32 @@ import Game from '../db/game';
 
 const resolvers = {
   Mutation: {
-    createTeam(_, { name }) {
-      if (!name) throw new Error('No team name given');
-      const team = new Team({ name });
+    createTeam(_, { input }) {
+      const team = new Team(input);
       return team.save();
     },
 
-    createGame(_, args) {
+    createGame(_, { input }) {
       const {
         homeTeam,
         awayTeam,
         location,
-        homeTeamWon = false,
-        awayTeamWon = false,
         homeScore = 0,
         awayScore = 0,
         period = 1,
         isInProgress = false,
         isFinal = false,
         date = new Date(),
-      } = args;
-
-      if (!homeTeam || !awayTeam || !location) {
-        throw new Error('Missing required arguments for createGame');
-      }
+      } = input;
 
       const game = new Game({
         homeTeam: {
-          info: homeTeam,
-          winner: homeTeamWon,
+          info: homeTeam.info,
+          winner: homeTeam.winner || false,
         },
         awayTeam: {
-          info: awayTeam,
-          winner: awayTeamWon,
+          info: awayTeam.info,
+          winner: awayTeam.winner || false,
         },
         location,
         homeScore,
@@ -50,8 +43,7 @@ const resolvers = {
 
       return game.save().then(({ _id }) => (
         Game.findOne({ _id })
-          .populate({ path: 'homeTeam.info' })
-          .populate({ path: 'awayTeam.info' })
+          .populate('homeTeam.info awayTeam.info')
           .lean()
           .exec()
           .then((populatedGame) => {

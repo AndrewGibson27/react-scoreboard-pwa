@@ -1,7 +1,19 @@
 const typeDefs = `
-  type Team {
-    _id: ID!
-    name: String!
+  input GameInputTeam {
+    info: ID!
+    winner: Boolean
+  }
+
+  input GameInput {
+    homeTeam: GameInputTeam!
+    awayTeam: GameInputTeam!
+    location: String!
+    homeScore: Int
+    awayScore: Int
+    period: Int
+    isInProgress: Boolean
+    isFinal: Boolean
+    date: String
   }
 
   type TeamWithWinner {
@@ -23,6 +35,15 @@ const typeDefs = `
     date: String!
   }
 
+  input TeamInput {
+    name: String!
+  }
+
+  type Team {
+    _id: ID!
+    name: String!
+  }
+
   type Query {
     allTeams(
       start: Int
@@ -37,21 +58,11 @@ const typeDefs = `
 
   type Mutation {
     createTeam(
-      name: String!
+      input: TeamInput!
     ): Team!
 
     createGame(
-      homeTeam: ID!
-      awayTeam: ID!
-      location: String!
-      homeTeamWon: Boolean
-      awayTeamWon: Boolean
-      homeScore: Int
-      awayScore: Int
-      period: Int
-      isInProgress: Boolean
-      isFinal: Boolean
-      date: String
+      input: GameInput!
     ): Game!
   }
 `;
