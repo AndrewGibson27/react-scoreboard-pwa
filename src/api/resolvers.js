@@ -2,29 +2,21 @@
 
 import Team from '../db/team';
 import Game from '../db/game';
-import {
-  getAndFormatGame,
-  prepareTeamsforGameMutation,
-  prepareFieldsForGameMutation,
-} from './utils';
+import { getAndFormatGame, prepareFieldsForGameMutation } from './utils';
 
 const resolvers = {
   Mutation: {
     createTeam(_, { input }) {
-      const team = new Team(input);
-      return team.save();
+      return new Team(input).save();
     },
 
-    updateGame(_, { input, _id }) {
-      const teams = prepareTeamsforGameMutation(input);
-      const fields = { ...input, ...teams };
-
-      return Game.findOneAndUpdate(
+    updateTeam(_, { input }) {
+      const { _id, ...updates } = input;
+      return Team.findOneAndUpdate(
         { _id },
-        { $set: fields },
-      ).then(({ _id: gameId }) => (
-        getAndFormatGame({ _id: gameId })
-      ));
+        { $set: updates },
+        { new: true },
+      );
     },
 
     createGame(_, { input }) {
@@ -32,6 +24,34 @@ const resolvers = {
       const game = new Game(fields);
 
       return game.save().then(({ _id }) => getAndFormatGame(_id));
+    },
+
+    updateGame(_, { input }) {
+      const {
+        _id,
+        awayTeam,
+        homeTeam,
+        ...updates
+      } = input;
+
+      if (homeTeam) {
+        const { info, winner } = homeTeam;
+        if (info) updates['homeTeam.info'] = info;
+        if (typeof winner !== 'undefined') updates['homeTeam.winner'] = winner;
+      }
+
+      if (awayTeam) {
+        const { info, winner } = awayTeam;
+        if (info) updates['awayTeam.info'] = info;
+        if (typeof winner !== 'undefined') updates['awayTeam.winner'] = winner;
+      }
+
+      return Game.findOneAndUpdate(
+        { _id },
+        { $set: updates },
+      ).then(({ _id: gameId }) => (
+        getAndFormatGame(gameId)
+      ));
     },
   },
 };

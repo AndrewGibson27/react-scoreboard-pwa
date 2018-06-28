@@ -27,27 +27,10 @@ export function getAndFormatGame(_id) {
     });
 }
 
-export function prepareTeamsforGameMutation(input) {
-  const { homeTeam, awayTeam } = input;
-
-  const formattedHomeTeam = {
-    info: homeTeam.info,
-    winner: homeTeam.winner || false,
-  };
-
-  const formattedAwayTeam = {
-    info: awayTeam.info,
-    winner: awayTeam.winner || false,
-  };
-
-  return {
-    homeTeam: formattedHomeTeam,
-    awayTeam: formattedAwayTeam,
-  };
-}
-
 export function prepareFieldsForGameMutation(input) {
   const {
+    homeTeam,
+    awayTeam,
     location,
     homeScore = 0,
     awayScore = 0,
@@ -57,10 +40,15 @@ export function prepareFieldsForGameMutation(input) {
     date = new Date(),
   } = input;
 
-  const teams = prepareTeamsforGameMutation(input);
-
   return {
-    ...teams,
+    homeTeam: {
+      info: homeTeam.info,
+      winner: homeTeam.winner || false,
+    },
+    awayTeam: {
+      info: awayTeam.info,
+      winner: awayTeam.winner || false,
+    },
     location,
     homeScore,
     awayScore,

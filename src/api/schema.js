@@ -1,27 +1,4 @@
 const typeDefs = `
-  input GameInputTeam {
-    info: ID!
-    winner: Boolean
-  }
-
-  input GameInput {
-    homeTeam: GameInputTeam!
-    awayTeam: GameInputTeam!
-    location: String!
-    homeScore: Int
-    awayScore: Int
-    period: Int
-    isInProgress: Boolean
-    isFinal: Boolean
-    date: String
-  }
-
-  type TeamWithWinner {
-    _id: ID!
-    name: String!
-    winner: Boolean!
-  }
-
   type Game {
     _id: ID!
     homeTeam: TeamWithWinner!
@@ -35,14 +12,62 @@ const typeDefs = `
     date: String!
   }
 
-  input TeamInput {
+  type TeamWithWinner {
+    _id: ID!
     name: String!
+    winner: Boolean!
   }
+
+  input GameCreate {
+    homeTeam: GameCreateTeam!
+    awayTeam: GameCreateTeam!
+    location: String!
+    homeScore: Int
+    awayScore: Int
+    period: Int
+    isInProgress: Boolean
+    isFinal: Boolean
+    date: String
+  }
+
+  input GameCreateTeam {
+    info: ID!
+    winner: Boolean
+  }
+
+  input GameUpdate {
+    _id: ID!
+    homeTeam: GameUpdateTeam
+    awayTeam: GameUpdateTeam
+    location: String
+    homeScore: Int
+    awayScore: Int
+    period: Int
+    isInProgress: Boolean
+    isFinal: Boolean
+    date: String
+  }
+
+  input GameUpdateTeam {
+    info: ID
+    winner: Boolean
+  }
+
 
   type Team {
     _id: ID!
     name: String!
   }
+
+  input TeamCreate {
+    name: String!
+  }
+
+  input TeamUpdate {
+    _id: ID!
+    name: String
+  }
+
 
   type Query {
     allTeams(
@@ -56,23 +81,22 @@ const typeDefs = `
     ): [Game!]!
   }
 
+
   type Mutation {
     createTeam(
-      input: TeamInput!
+      input: TeamCreate!
     ): Team!
 
     updateTeam(
-      input: TeamInput!
-      _id: ID!
+      input: TeamUpdate!
     ): Team!
 
     createGame(
-      input: GameInput!
+      input: GameCreate!
     ): Game!
 
     updateGame(
-      input: GameInput!
-      _id: ID!
+      input: GameUpdate!
     ): Game!
   }
 `;
