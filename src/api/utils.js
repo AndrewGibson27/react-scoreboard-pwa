@@ -1,30 +1,23 @@
 /* eslint-disable no-underscore-dangle, no-param-reassign */
 
-import Game from '../db/game';
+export function formatGame(game) {
+  const { homeTeam: popHome, awayTeam: popAway } = game;
+  const { info: homeInfo, winner: homeWinner } = popHome;
+  const { info: awayInfo, winner: awayWinner } = popAway;
 
-export function getAndFormatGame(_id) {
-  return Game.findOne({ _id })
-    .populate('homeTeam.info awayTeam.info')
-    .lean()
-    .exec()
-    .then((populatedGame) => {
-      const { homeTeam: popHome, awayTeam: popAway } = populatedGame;
-      const { info: homeInfo, winner: homeWinner } = popHome;
-      const { info: awayInfo, winner: awayWinner } = popAway;
+  game.homeTeam = {
+    _id: homeInfo._id,
+    name: homeInfo.name,
+    winner: homeWinner,
+  };
 
-      populatedGame.homeTeam = {
-        _id: homeInfo._id,
-        name: homeInfo.name,
-        winner: homeWinner,
-      };
-      populatedGame.awayTeam = {
-        _id: awayInfo._id,
-        name: awayInfo.name,
-        winner: awayWinner,
-      };
+  game.awayTeam = {
+    _id: awayInfo._id,
+    name: awayInfo.name,
+    winner: awayWinner,
+  };
 
-      return populatedGame;
-    });
+  return game;
 }
 
 export function prepareFieldsForGameMutation(input) {

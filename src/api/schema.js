@@ -79,6 +79,14 @@ const typeDefs = `
       start: Int
       limit: Int
     ): [Game!]!
+
+    gameById(
+      _id: ID!
+    ): Game!
+
+    teamById(
+      _id: ID!
+    ): Team!
   }
 
 

@@ -2,7 +2,7 @@
 
 import Team from '../db/team';
 import Game from '../db/game';
-import { getAndFormatGame, prepareFieldsForGameMutation } from './utils';
+import { prepareFieldsForGameMutation, formatGame } from './utils';
 
 const resolvers = {
   Mutation: {
@@ -23,7 +23,13 @@ const resolvers = {
       const fields = prepareFieldsForGameMutation(input);
       const game = new Game(fields);
 
-      return game.save().then(({ _id }) => getAndFormatGame(_id));
+      return game.save().then(({ _id }) => (
+        Game.findById(_id)
+          .populate('homeTeam.info awayTeam.info')
+          .lean()
+          .exec()
+          .then(savedGame => formatGame(savedGame))
+      ));
     },
 
     updateGame(_, { input }) {
@@ -49,9 +55,43 @@ const resolvers = {
       return Game.findOneAndUpdate(
         { _id },
         { $set: updates },
-      ).then(({ _id: gameId }) => (
-        getAndFormatGame(gameId)
-      ));
+        { new: true },
+      )
+        .populate('homeTeam.info awayTeam.info')
+        .lean()
+        .exec()
+        .then(game => formatGame(game));
+    },
+  },
+
+  Query: {
+    allTeams(_, { start, limit }) {
+      return Team
+        .find()
+        .skip(start || 0)
+        .limit(limit || 100);
+    },
+
+    allGames(_, { start, limit }) {
+      return Game
+        .find()
+        .skip(start || 0)
+        .limit(limit || 100)
+        .populate('homeTeam.info awayTeam.info')
+        .lean()
+        .exec()
+        .then(games => (
+          games.map(game => formatGame(game))
+        ));
+    },
+
+    teamById(_, { _id }) {
+      return Team.findById(_id);
+    },
+
+    gameById(_, { _id }) {
+      return Game.findById(_id)
+        .then(game => formatGame(game));
     },
   },
 };
