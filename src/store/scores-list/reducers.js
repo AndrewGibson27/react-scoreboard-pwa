@@ -1,11 +1,9 @@
-const initialState = {
-  data: [],
-};
+const initialState = { data: [] };
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case 'BAR':
-      return { data: action.data };
+    case 'SET_SCORES_LIST_DATA':
+      return { ...state, data: action.data };
     default:
       return state;
   }

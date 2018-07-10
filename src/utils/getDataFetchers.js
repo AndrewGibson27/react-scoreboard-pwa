@@ -10,7 +10,7 @@ export default function getDataFetchers(url, store) {
 
     if (foundPath && criticalFetchers.length) {
       criticalFetchers.forEach((fetcher) => {
-        fetchers.push(fetcher(foundPath.params, store));
+        fetchers.push(fetcher(foundPath, store));
       });
     }
   });

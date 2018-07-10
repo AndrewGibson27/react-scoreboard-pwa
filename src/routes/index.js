@@ -1,22 +1,26 @@
-import adminCriticalFetcher from './admin/criticalFetch';
-import fooNavCriticalFetcher from './foo/nav/criticalFetch';
-import fooMainCriticalFetcher from './foo/main/criticalFetch';
+import scoresRibbonFetcher from './ribbon/criticalFetch';
+import scoresListFetcher from './list/criticalFetch';
 
 export default [
   {
-    path: '/',
-    exact: true,
+    path: '/scores',
+    exact: false,
     criticalFetchers: [
-      adminCriticalFetcher,
+      scoresRibbonFetcher,
     ],
   },
 
   {
-    path: '/foo',
-    exact: false,
+    path: '/scores',
+    exact: true,
     criticalFetchers: [
-      fooNavCriticalFetcher,
-      fooMainCriticalFetcher,
+      scoresListFetcher,
     ],
   },
+
+  /* {
+    path: '/scores/:id',
+    exact: true,
+    criticalFetchers: [],
+  }, */
 ];

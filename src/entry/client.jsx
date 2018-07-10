@@ -10,20 +10,18 @@ import thunk from 'redux-thunk';
 import createHistory from 'history/createBrowserHistory';
 
 import App from '../App'; // eslint-disable-line
-import adminReducer from '../store/admin/reducers';
-import barReducer from '../store/bar/reducers';
-import bazReducer from '../store/baz/reducers';
 import contextReducer from '../store/context/reducers';
+import scoresRibbonReducer from '../store/scores-ribbon/reducers';
+import scoresListReducer from '../store/scores-list/reducers';
 import getDataFetchers from '../utils/getDataFetchers';
 import { setLoading, setReady } from '../store/context/actions';
 
 const history = createHistory();
 const store = createStore(
   combineReducers({
-    adminState: adminReducer,
-    barState: barReducer,
-    bazState: bazReducer,
     context: contextReducer,
+    scoresRibbon: scoresRibbonReducer,
+    scoresList: scoresListReducer,
   }),
   window.INITIAL_STATE,
   applyMiddleware(thunk),

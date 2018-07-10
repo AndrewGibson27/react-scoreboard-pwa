@@ -3,44 +3,37 @@ import { Route, Switch, Redirect, NavLink } from 'react-router-dom';
 import Loadable from 'react-loadable';
 import { connect } from 'react-redux';
 
-const Loader = () => <p>Loading...</p>;
+import ErrorScreen from './Error';
+import Loading from './Loading';
 
-const AdminRoute = Loadable({
-  loader: () => import('./routes/admin').then(object => object.default),
-  loading: Loader,
+const ScoresRibbon = Loadable({
+  loader: () => import('./routes/ribbon').then(object => object.default),
+  loading: Loading,
 });
 
-const FooNavRoute = Loadable({
-  loader: () => import('./routes/foo/nav').then(object => object.default),
-  loading: Loader,
+const ScoresList = Loadable({
+  loader: () => import('./routes/list').then(object => object.default),
+  loading: Loading,
 });
 
-const FooMainRoute = Loadable({
-  loader: () => import('./routes/foo/main').then(object => object.default),
-  loading: Loader,
-});
-
-const mapStateToProps = ({ context: { error, loading } }) => {
-  return { error, loading };
+const mapStateToProps = ({ context: { error, loading, errorMessage } }) => {
+  const isReady = !error && !loading;
+  return { error, errorMessage, loading, isReady };
 };
 
-const App = ({ error, loading }) => (
+const App = ({ error, errorMessage, loading, isReady }) => (
   <main>
-    <p>{loading.toString()}</p>
-    {error && <p>Oh no!!!</p>}
-    {loading && <p>Loading!!!</p>}
-    {(!error && !loading) &&
+    {error && <ErrorScreen message={errorMessage} />}
+    {loading && <Loading />}
+    {
+      isReady &&
       <div>
         <nav>
-          <Route path="/foo" component={FooNavRoute} />
+          <Route path="/scores" component={ScoresRibbon} />
         </nav>
-        <div>
-          <NavLink to="/foo">Go to foo</NavLink>
-        </div>
         <Switch>
-          <Route path="/" exact component={AdminRoute} />
-          <Route path="/foo" component={FooMainRoute} />
-          <Redirect to="/" />
+          <Route path="/scores" exact component={ScoresList} />
+          <Redirect to="/scores" />
         </Switch>
       </div>
     }

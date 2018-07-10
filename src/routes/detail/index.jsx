@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default () => (
-  <h1>Foo nav route!</h1>
+  <h1>Score Detail</h1>
 );

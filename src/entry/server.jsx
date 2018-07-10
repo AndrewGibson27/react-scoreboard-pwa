@@ -19,10 +19,9 @@ import App from '../App'; // eslint-disable-line
 import config from '../config';
 import initDb from '../db';
 import schema from '../api';
-import adminReducer from '../store/admin/reducers';
-import barReducer from '../store/bar/reducers';
-import bazReducer from '../store/baz/reducers';
 import contextReducer from '../store/context/reducers';
+import scoresRibbonReducer from '../store/scores-ribbon/reducers';
+import scoresListReducer from '../store/scores-list/reducers';
 import getDataFetchers from '../utils/getDataFetchers';
 import webpackBaseConfig from '../../webpack/base';
 import webpackDevConfig from '../../webpack/client.dev';
@@ -48,10 +47,9 @@ if (isDev) {
 app.get('*', (req, res) => {
   const store = createStore(
     combineReducers({
-      adminState: adminReducer,
-      barState: barReducer,
-      bazState: bazReducer,
       context: contextReducer,
+      scoresRibbon: scoresRibbonReducer,
+      scoresList: scoresListReducer,
     }),
     {},
     applyMiddleware(thunk),
@@ -82,6 +80,8 @@ app.get('*', (req, res) => {
     const content = ReactDOM.renderToString(initialTree);
     const syncBundles = manifest.entrypoints.main.js;
     const asyncBundles = getBundles(stats, modules);
+
+    console.log(store.getState());
 
     res.send(`
       <!DOCTYPE html>
