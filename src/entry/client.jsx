@@ -13,6 +13,7 @@ import App from '../App'; // eslint-disable-line
 import contextReducer from '../store/context/reducers';
 import scoresRibbonReducer from '../store/scores-ribbon/reducers';
 import scoresListReducer from '../store/scores-list/reducers';
+import scoreDetailReducer from '../store/score-detail/reducers';
 import getDataFetchers from '../utils/getDataFetchers';
 import { setLoading, setReady } from '../store/context/actions';
 
@@ -22,6 +23,7 @@ const store = createStore(
     context: contextReducer,
     scoresRibbon: scoresRibbonReducer,
     scoresList: scoresListReducer,
+    scoreDetail: scoreDetailReducer,
   }),
   window.INITIAL_STATE,
   applyMiddleware(thunk),

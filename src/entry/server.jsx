@@ -22,6 +22,7 @@ import schema from '../api';
 import contextReducer from '../store/context/reducers';
 import scoresRibbonReducer from '../store/scores-ribbon/reducers';
 import scoresListReducer from '../store/scores-list/reducers';
+import scoreDetailReducer from '../store/score-detail/reducers';
 import getDataFetchers from '../utils/getDataFetchers';
 import webpackBaseConfig from '../../webpack/base';
 import webpackDevConfig from '../../webpack/client.dev';
@@ -50,6 +51,7 @@ app.get('*', (req, res) => {
       context: contextReducer,
       scoresRibbon: scoresRibbonReducer,
       scoresList: scoresListReducer,
+      scoreDetail: scoreDetailReducer,
     }),
     {},
     applyMiddleware(thunk),
@@ -80,8 +82,6 @@ app.get('*', (req, res) => {
     const content = ReactDOM.renderToString(initialTree);
     const syncBundles = manifest.entrypoints.main.js;
     const asyncBundles = getBundles(stats, modules);
-
-    console.log(store.getState());
 
     res.send(`
       <!DOCTYPE html>

@@ -91,6 +91,9 @@ const resolvers = {
 
     gameById(_, { _id }) {
       return Game.findById(_id)
+        .populate('homeTeam.info awayTeam.info')
+        .lean()
+        .exec()
         .then(game => formatGame(game));
     },
   },

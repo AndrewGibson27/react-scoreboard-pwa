@@ -1,5 +1,7 @@
+/* eslint-disable react/prop-types */
+
 import React from 'react';
 
-export default () => (
-  <h1>Score Detail</h1>
-);
+import ScoreDetail from './containers/ScoreDetail';
+
+export default ({ match }) => <ScoreDetail match={match} />;

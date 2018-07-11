@@ -17,10 +17,4 @@ export default [
       scoresListFetcher,
     ],
   },
-
-  /* {
-    path: '/scores/:id',
-    exact: true,
-    criticalFetchers: [],
-  }, */
 ];

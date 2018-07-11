@@ -1,10 +1,6 @@
 export default `
-  query ScoresListQuery {
-    allGames {
-      _id,
-      homeScore
-      awayScore
-      period
+  query ScoreDetailQuery($id: ID!) {
+    gameById(_id: $id) {
       homeTeam {
         _id,
         name,
@@ -15,6 +11,12 @@ export default `
         name,
         winner
       }
+      location
+      isFinal
+      isInProgress
+      homeScore
+      awayScore
+      period
     }
   }
 `;

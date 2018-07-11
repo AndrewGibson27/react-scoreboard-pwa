@@ -16,6 +16,11 @@ const ScoresList = Loadable({
   loading: Loading,
 });
 
+const ScoreDetail = Loadable({
+  loader: () => import('./routes/detail').then(object => object.default),
+  loading: Loading,
+});
+
 const mapStateToProps = ({ context: { error, loading, errorMessage } }) => {
   const isReady = !error && !loading;
   return { error, errorMessage, loading, isReady };
@@ -33,6 +38,7 @@ const App = ({ error, errorMessage, loading, isReady }) => (
         </nav>
         <Switch>
           <Route path="/scores" exact component={ScoresList} />
+          <Route path="/scores/:id" exact component={ScoreDetail} />
           <Redirect to="/scores" />
         </Switch>
       </div>
