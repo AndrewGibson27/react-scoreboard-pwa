@@ -103,17 +103,16 @@ app.get('*', (req, res) => {
   });
 });
 
-initDb().then(() => {
-  Loadable.preloadAll().then(() => {
-    // eslint-disable-next-line consistent-return
-    app.listen(port, 'localhost', (err) => {
-      if (err) {
-        if (isDev) {
-          console.log(err); // eslint-disable-line
-        }
-        return false;
-      }
-      console.log(`Listening at http://localhost:${port}`); // eslint-disable-line
-    });
+Promise.all([
+  initDb(),
+  Loadable.preloadAll(),
+]).then(() => {
+  // eslint-disable-next-line consistent-return
+  app.listen(port, 'localhost', (err) => {
+    if (err) {
+      if (isDev) console.error(err); // eslint-disable-line
+      return false;
+    }
+    console.log(`Listening at http://localhost:${port}`); // eslint-disable-line
   });
 });
