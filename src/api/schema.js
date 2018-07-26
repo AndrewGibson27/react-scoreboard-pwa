@@ -1,4 +1,18 @@
 const typeDefs = `
+  type User {
+    _id: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    isAdmin: Boolean!
+  }
+
+  input LogIn {
+    email: String!
+    password: String!
+  }
+
+
   type Game {
     _id: ID!
     homeTeam: TeamWithWinner!
@@ -106,6 +120,10 @@ const typeDefs = `
     updateGame(
       input: GameUpdate!
     ): Game!
+
+    logIn(
+      input: LogIn!
+    ): User!
   }
 `;
 

@@ -11,6 +11,7 @@ import createHistory from 'history/createBrowserHistory';
 
 import App from '../App'; // eslint-disable-line
 import contextReducer from '../store/context/reducers';
+import userReducer from '../store/user/reducers';
 import scoresRibbonReducer from '../store/scores-ribbon/reducers';
 import scoresListReducer from '../store/scores-list/reducers';
 import scoreDetailReducer from '../store/score-detail/reducers';
@@ -21,6 +22,7 @@ const history = createHistory();
 const store = createStore(
   combineReducers({
     context: contextReducer,
+    user: userReducer,
     scoresRibbon: scoresRibbonReducer,
     scoresList: scoresListReducer,
     scoreDetail: scoreDetailReducer,

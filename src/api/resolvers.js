@@ -2,10 +2,27 @@
 
 import Team from '../db/team';
 import Game from '../db/game';
+import User from '../db/user';
 import { prepareFieldsForGameMutation, formatGame } from './utils';
 
 const resolvers = {
   Mutation: {
+    // yes, the encryption on this is awful
+    logIn(_, { input: { email, password } }) {
+      return User.findOne({ email })
+        .exec()
+        .then((user) => {
+          if (!user) throw new Error('Email address does not exist');
+        })
+        .then(() => (
+          User.findOne({ password })
+            .then((user) => {
+              if (!user) throw new Error('Incorrect password');
+              return user;
+            })
+        ));
+    },
+
     createTeam(_, { input }) {
       return new Team(input).save();
     },

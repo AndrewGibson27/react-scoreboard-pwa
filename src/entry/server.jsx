@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import express from 'express';
+import cookieSession from 'cookie-session';
 import graphqlHTTP from 'express-graphql';
 import bodyParser from 'body-parser';
 import webpack from 'webpack'; // eslint-disable-line
@@ -20,6 +21,7 @@ import config from '../config';
 import initDb from '../db';
 import schema from '../api';
 import contextReducer from '../store/context/reducers';
+import userReducer from '../store/user/reducers';
 import scoresRibbonReducer from '../store/scores-ribbon/reducers';
 import scoresListReducer from '../store/scores-list/reducers';
 import scoreDetailReducer from '../store/score-detail/reducers';
@@ -27,13 +29,23 @@ import getDataFetchers from '../utils/getDataFetchers';
 import webpackBaseConfig from '../../webpack/base';
 import webpackDevConfig from '../../webpack/client.dev';
 
+import auth from './auth';
+
 const { port, isDev } = config;
 const { PUBLIC_PATH } = webpackBaseConfig;
 const compiler = webpack(webpackDevConfig);
 const app = express();
 
 app.use(express.static('public'));
-app.use('/graphql', bodyParser.json(), graphqlHTTP({ schema, graphiql: true }));
+app.use(bodyParser.json());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['foobarbaz'],
+  maxAge: 24 * 60 * 60 * 1000,
+}));
+
+app.use('/api', auth);
+app.use('/graphql', graphqlHTTP({ schema, graphiql: true }));
 app.set('view engine', 'pug');
 app.set('port', port);
 
@@ -49,6 +61,7 @@ app.get('*', (req, res) => {
   const store = createStore(
     combineReducers({
       context: contextReducer,
+      user: userReducer,
       scoresRibbon: scoresRibbonReducer,
       scoresList: scoresListReducer,
       scoreDetail: scoreDetailReducer,
