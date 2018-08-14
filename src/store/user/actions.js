@@ -12,7 +12,6 @@ export default function logIn(input) {
       mutation: LogInMutation,
       variables: { input },
     }).then(({ data: { data: { user } } }) => {
-      console.log(user);
       dispatch({
         type: 'SET_USER_COMPLETE',
         data: user,

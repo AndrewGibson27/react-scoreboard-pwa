@@ -29,8 +29,6 @@ import getDataFetchers from '../utils/getDataFetchers';
 import webpackBaseConfig from '../../webpack/base';
 import webpackDevConfig from '../../webpack/client.dev';
 
-import auth from './auth';
-
 const { port, isDev } = config;
 const { PUBLIC_PATH } = webpackBaseConfig;
 const compiler = webpack(webpackDevConfig);
@@ -44,8 +42,10 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000,
 }));
 
-app.use('/api', auth);
-app.use('/graphql', graphqlHTTP({ schema, graphiql: true }));
+app.use('/graphql', (req, res, next) => {
+  const context = { req, res };
+  graphqlHTTP({ schema, context, graphiql: true })(req, res, next);
+});
 app.set('view engine', 'pug');
 app.set('port', port);
 

@@ -101,6 +101,8 @@ const typeDefs = `
     teamById(
       _id: ID!
     ): Team!
+
+    user: User!
   }
 
 

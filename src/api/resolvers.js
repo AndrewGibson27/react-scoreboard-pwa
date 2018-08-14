@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle, no-param-reassign */
+import jwt from 'jsonwebtoken';
 
 import Team from '../db/team';
 import Game from '../db/game';
@@ -8,16 +9,25 @@ import { prepareFieldsForGameMutation, formatGame } from './utils';
 const resolvers = {
   Mutation: {
     // yes, the encryption on this is awful
-    logIn(_, { input: { email, password } }) {
+    // and not intended to be production-ready
+    logIn(_, { input: { email, password } }, { req }) {
       return User.findOne({ email })
         .exec()
         .then((user) => {
           if (!user) throw new Error('Email address does not exist');
         })
         .then(() => (
-          User.findOne({ password })
+          User.findOne({ email, password })
             .then((user) => {
               if (!user) throw new Error('Incorrect password');
+
+              const token = jwt.sign({
+                foo: 'bar',
+                expiresIn: '2 days',
+              }, 'foobarbaz');
+
+              req.session.user = token;
+
               return user;
             })
         ));
@@ -82,6 +92,10 @@ const resolvers = {
   },
 
   Query: {
+    user() {
+
+    },
+
     allTeams(_, { start, limit }) {
       return Team
         .find()

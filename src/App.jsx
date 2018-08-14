@@ -21,6 +21,11 @@ const ScoreDetail = Loadable({
   loading: Loading,
 });
 
+const LogIn = Loadable({
+  loader: () => import('./routes/login').then(object => object.default),
+  loading: Loading,
+});
+
 const mapStateToProps = ({ context: { error, loading, errorMessage } }) => {
   const isReady = !error && !loading;
   return { error, errorMessage, loading, isReady };
@@ -28,8 +33,14 @@ const mapStateToProps = ({ context: { error, loading, errorMessage } }) => {
 
 const App = ({ error, errorMessage, loading, isReady }) => (
   <main>
-    {error && <ErrorScreen message={errorMessage} />}
-    {loading && <Loading />}
+    {
+      error &&
+      <ErrorScreen message={errorMessage} />
+    }
+    {
+      loading &&
+      <Loading />
+    }
     {
       isReady &&
       <div>
@@ -39,6 +50,7 @@ const App = ({ error, errorMessage, loading, isReady }) => (
         <Switch>
           <Route path="/scores" exact component={ScoresList} />
           <Route path="/scores/:id" exact component={ScoreDetail} />
+          <Route path="/login" exact component={LogIn} />
           <Redirect to="/scores" />
         </Switch>
       </div>
