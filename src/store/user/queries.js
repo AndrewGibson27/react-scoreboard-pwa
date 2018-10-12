@@ -1,6 +1,6 @@
 export default `
-  mutation LogInMutation($input: LogIn!) {
-    logIn(input: $input) {
+  query {
+    user {
       firstName
       lastName
       email

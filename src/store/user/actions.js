@@ -1,26 +1,24 @@
 import axios from 'axios';
 
-import LogInMutation from './mutations';
+import UserQuery from './queries';
 
 const API_URL = 'http://localhost:3000/graphql';
 
-export default function logIn(input) {
+export default function getUser(httpClient) {
+  const clientToUse = httpClient || axios;
+
   return (dispatch) => {
     dispatch({ type: 'SET_USER_LOADING' });
 
-    return axios.post(API_URL, {
-      mutation: LogInMutation,
-      variables: { input },
+    return clientToUse.post(API_URL, {
+      query: UserQuery,
     }).then(({ data: { data: { user } } }) => {
       dispatch({
-        type: 'SET_USER_COMPLETE',
+        type: 'SET_USER_LOGGED_IN',
         data: user,
       });
     }).catch(() => {
-      dispatch({
-        type: 'SET_USER_ERROR',
-        errorMessage: 'foobar',
-      });
+      dispatch({ type: 'SET_USER_LOGGED_OUT' });
     });
   };
 }

@@ -22,7 +22,7 @@ const resolvers = {
               if (!user) throw new Error('Incorrect password');
 
               const token = jwt.sign({
-                foo: 'bar',
+                user,
                 expiresIn: '2 days',
               }, 'foobarbaz');
 
@@ -92,8 +92,12 @@ const resolvers = {
   },
 
   Query: {
-    user() {
+    user(_, __, { req: { session } }) {
+      const { user } = session;
 
+      if (!user) throw new Error('User is not logged in');
+
+      return jwt.verify(user, 'foobarbaz').user;
     },
 
     allTeams(_, { start, limit }) {

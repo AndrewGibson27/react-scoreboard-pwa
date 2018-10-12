@@ -1,12 +1,20 @@
+/* eslint-disable react/prop-types */
+
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
 import LogInMutation from '../mutations';
+import getUser from '../../../store/user/actions';
 
 const API_URL = 'http://localhost:3000/graphql';
 
-export default class Form extends Component {
+const mapDispatchToProps = dispatch => ({
+  getUser: () => dispatch(getUser()),
+});
+
+class Form extends Component {
   constructor() {
     super();
 
@@ -37,7 +45,9 @@ export default class Form extends Component {
       variables: { input: { email, password } },
     })
       .then(() => {
-        this.setState({ successful: true });
+        this.props.getUser().then(() => {
+          this.setState({ successful: true });
+        });
       })
       .catch(({ response: { data: { errors } } }) => {
         let errorMessage = '';
@@ -88,3 +98,5 @@ export default class Form extends Component {
     );
   }
 }
+
+export default connect(() => ({}), mapDispatchToProps)(Form);

@@ -5,6 +5,7 @@ export default [
   {
     path: '/scores',
     exact: false,
+    requiresAuth: false,
     criticalFetchers: [
       scoresRibbonFetcher,
     ],
@@ -12,9 +13,17 @@ export default [
 
   {
     path: '/scores',
+    requiresAuth: false,
     exact: true,
     criticalFetchers: [
       scoresListFetcher,
     ],
+  },
+
+  {
+    path: '/admin',
+    requiresAuth: true,
+    exact: true,
+    criticalFetchers: [],
   },
 ];

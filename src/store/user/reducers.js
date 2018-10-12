@@ -1,9 +1,8 @@
 const initialState = {
   data: {},
   isLoading: false,
-  didError: false,
+  isLoggedIn: false,
   isFinished: false,
-  errorMessage: '',
 };
 
 export default (state = initialState, action) => {
@@ -12,24 +11,21 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isLoading: true,
-        didError: false,
-        isFinished: false,
       };
-    case 'SET_USER_COMPLETE':
+    case 'SET_USER_LOGGED_IN':
       return {
         ...state,
         isLoading: false,
-        didError: false,
+        isLoggedIn: true,
         isFinished: true,
         data: action.data,
       };
-    case 'SET_USER_ERROR':
+    case 'SET_USER_LOGGED_OUT':
       return {
         ...state,
         isLoading: false,
-        didError: true,
+        isLoggedIn: false,
         isFinished: true,
-        errorMessage: action.errorMessage,
       };
     default:
       return state;
