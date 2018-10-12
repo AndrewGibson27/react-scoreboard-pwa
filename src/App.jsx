@@ -7,32 +7,32 @@ import ErrorScreen from './Error';
 import Loading from './Loading';
 
 const ScoresRibbon = Loadable({
-  loader: () => import('./routes/ribbon').then(object => object.default),
+  loader: () => import('./routes/ribbon'),
   loading: Loading,
 });
 
 const ScoresList = Loadable({
-  loader: () => import('./routes/list').then(object => object.default),
+  loader: () => import('./routes/list'),
   loading: Loading,
 });
 
 const ScoreDetail = Loadable({
-  loader: () => import('./routes/detail').then(object => object.default),
+  loader: () => import('./routes/detail'),
   loading: Loading,
 });
 
 const LogIn = Loadable({
-  loader: () => import('./routes/login').then(object => object.default),
+  loader: () => import('./routes/login'),
   loading: Loading,
 });
 
 const Admin = Loadable({
-  loader: () => import('./routes/admin').then(object => object.default),
+  loader: () => import('./routes/admin'),
   loading: Loading,
 });
 
 const NotFound = Loadable({
-  loader: () => import('./NotFound').then(object => object.default),
+  loader: () => import('./NotFound'),
   loading: Loading,
 });
 

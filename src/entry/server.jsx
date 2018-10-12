@@ -7,7 +7,6 @@ import { getBundles } from 'react-loadable/webpack';
 import { StaticRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import express from 'express';
-import cors from 'cors';
 import morgan from 'morgan';
 import session from 'express-session';
 import graphqlHTTP from 'express-graphql';
@@ -94,6 +93,8 @@ app.get('*', (req, res) => {
       const content = ReactDOM.renderToString(initialTree);
       const syncBundles = manifest.entrypoints.main.js;
       const asyncBundles = getBundles(stats, modules);
+
+      console.log(modules);
 
       res.send(`
         <!DOCTYPE html>

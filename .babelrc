@@ -5,17 +5,13 @@
   ],
   "plugins": [
     "syntax-dynamic-import",
-    "transform-object-rest-spread"
+    "transform-object-rest-spread",
+    "react-loadable/babel"
   ],
   "env": {
     "server": {
       "plugins": [
         "dynamic-import-node"
-      ]
-    },
-    "client": {
-      "plugins": [
-        "react-loadable/babel"
       ]
     }
   }
