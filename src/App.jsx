@@ -31,6 +31,11 @@ const Admin = Loadable({
   loading: Loading,
 });
 
+const NotFound = Loadable({
+  loader: () => import('./NotFound').then(object => object.default),
+  loading: Loading,
+});
+
 const mapStateToProps = ({ context: { error, loading, errorMessage } }) => {
   const isReady = !error && !loading;
   return { error, errorMessage, loading, isReady };
@@ -38,8 +43,8 @@ const mapStateToProps = ({ context: { error, loading, errorMessage } }) => {
 
 const App = ({ error, errorMessage, loading, isReady }) => (
   <main>
-    {error &&<ErrorScreen message={errorMessage} />}
-    {loading &&<Loading />}
+    {error && <ErrorScreen message={errorMessage} />}
+    {loading && <Loading />}
     {
       isReady &&
       <div>
@@ -51,7 +56,7 @@ const App = ({ error, errorMessage, loading, isReady }) => (
           <Route path="/scores/:id" exact component={ScoreDetail} />
           <Route path="/login" exact component={LogIn} />
           <Route path="/admin" exact component={Admin} />
-          <Redirect to="/scores" />
+          <Route component={NotFound} />
         </Switch>
       </div>
     }
