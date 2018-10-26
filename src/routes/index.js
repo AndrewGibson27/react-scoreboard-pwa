@@ -4,8 +4,8 @@ import scoresListFetcher from './list/criticalFetch';
 export default [
   {
     path: '/scores',
-    exact: false,
     requiresAuth: false,
+    exact: false,
     criticalFetchers: [
       scoresRibbonFetcher,
     ],

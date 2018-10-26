@@ -2,6 +2,7 @@ const initialState = {
   error: false,
   errorMessage: '',
   loading: false,
+  routeRefresh: false,
 };
 
 export default (state = initialState, action) => {
@@ -19,6 +20,11 @@ export default (state = initialState, action) => {
         error: false,
         errorMessage: '',
         loading: true,
+      };
+    case 'SET_ROUTE_REFRESH':
+      return {
+        ...state,
+        routeRefresh: true,
       };
     case 'SET_READY':
       return initialState;

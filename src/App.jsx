@@ -36,15 +36,29 @@ const NotFound = Loadable({
   loading: Loading,
 });
 
-const mapStateToProps = ({ context: { error, loading, errorMessage } }) => {
-  const isReady = !error && !loading;
-  return { error, errorMessage, loading, isReady };
-};
+const mapStateToProps = ({
+  context: {
+    error,
+    loading,
+    errorMessage,
+    routeRefresh,
+  },
+}) => ({
+  error,
+  errorMessage,
+  loading,
+  isReady: !error && !loading,
+  routeRefresh, // hack to get custom router working
+});
 
 const App = ({ error, errorMessage, loading, isReady }) => (
   <main>
-    {error && <ErrorScreen message={errorMessage} />}
-    {loading && <Loading />}
+    {
+      error && <ErrorScreen message={errorMessage} />
+    }
+    {
+      loading && <Loading />
+    }
     {
       isReady &&
       <div>

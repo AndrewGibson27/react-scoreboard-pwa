@@ -1,11 +1,11 @@
 import { matchPath } from 'react-router-dom';
 
-import routes from '../routes';
+import allRoutes from '../routes';
 
-export default function getDataFetchers(url, store) {
+export default function getDataFetchers(url, store, routesToIter = allRoutes) {
   const fetchers = [];
 
-  routes.forEach(({ path, exact, criticalFetchers }) => {
+  routesToIter.forEach(({ path, exact, criticalFetchers }) => {
     const foundPath = matchPath(url, { path, exact, strict: false });
 
     if (foundPath && criticalFetchers.length) {

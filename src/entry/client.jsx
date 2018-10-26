@@ -10,20 +10,41 @@ import createHistory from 'history/createBrowserHistory';
 import App from '../App'; // eslint-disable-line
 import configureStore from '../utils/configureStore';
 import getDataFetchers from '../utils/getDataFetchers';
-import { setLoading, setReady } from '../store/context/actions';
+import getMatchedRoutes from '../utils/getMatchedRoutes';
+import {
+  setLoading,
+  setReady,
+  setRouteRefresh,
+} from '../store/context/actions';
 
 const history = createHistory();
 const store = configureStore(window.INITIAL_STATE);
 
 history.listen((location) => {
+  const { pathname } = location;
+  const prevMatched = getMatchedRoutes(window.PREVIOUS_PATHNAME);
+  const matched = getMatchedRoutes(pathname);
+
+  let diffed = false;
+  // eslint-disable-next-line no-return-assign
+  const activated = matched.filter((r, i) => (
+    diffed || (diffed = prevMatched[i] !== r)
+  ));
+
+  const fetchers = getDataFetchers(pathname, store, activated);
   const { dispatch } = store;
-  const criticalFetchers = getDataFetchers(location.pathname, store);
 
-  dispatch(setLoading());
+  window.PREVIOUS_PATHNAME = pathname;
 
-  Promise.all(criticalFetchers).then(() => {
+  if (fetchers.length) {
+    dispatch(setLoading());
+    Promise.all(fetchers).then(() => {
+      dispatch(setReady());
+    });
+  } else {
+    dispatch(setRouteRefresh());
     dispatch(setReady());
-  });
+  }
 });
 
 Loadable.preloadReady().then(() => {
@@ -37,5 +58,6 @@ Loadable.preloadReady().then(() => {
   );
 });
 
-// TODO fix me
-// module.hot.accept();
+if (process.env.NODE_ENV === 'development') {
+  module.hot.accept();
+}

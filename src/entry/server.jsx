@@ -94,8 +94,6 @@ app.get('*', (req, res) => {
       const syncBundles = manifest.entrypoints.main.js;
       const asyncBundles = getBundles(stats, modules);
 
-      console.log(modules);
-
       res.send(`
         <!DOCTYPE html>
         <html lang="en">

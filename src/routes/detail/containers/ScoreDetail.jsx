@@ -14,8 +14,8 @@ const mapDispatchToProps = dispatch => ({
 
 class ScoreDetail extends Component {
   componentDidMount() {
-    const { match: { params } } = this.props;
-    this.props.getScoreDetail(params.id);
+    const { match: { params: { id } } } = this.props;
+    this.props.getScoreDetail(id);
   }
 
   render() {
