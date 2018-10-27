@@ -6,18 +6,8 @@ import { connect } from 'react-redux';
 import ErrorScreen from './Error';
 import Loading from './Loading';
 
-const ScoresRibbon = Loadable({
-  loader: () => import('./routes/ribbon'),
-  loading: Loading,
-});
-
-const ScoresList = Loadable({
-  loader: () => import('./routes/list'),
-  loading: Loading,
-});
-
-const ScoreDetail = Loadable({
-  loader: () => import('./routes/detail'),
+const ScoresHome = Loadable({
+  loader: () => import('./routes/scores-home'),
   loading: Loading,
 });
 
@@ -61,18 +51,12 @@ const App = ({ error, errorMessage, loading, isReady }) => (
     }
     {
       isReady &&
-      <div>
-        <nav>
-          <Route path="/scores" component={ScoresRibbon} />
-        </nav>
-        <Switch>
-          <Route path="/scores" exact component={ScoresList} />
-          <Route path="/scores/:id" exact component={ScoreDetail} />
-          <Route path="/login" exact component={LogIn} />
-          <Route path="/admin" exact component={Admin} />
-          <Route component={NotFound} />
-        </Switch>
-      </div>
+      <Switch>
+        <Route path="/scores" component={ScoresHome} />
+        <Route path="/login" exact component={LogIn} />
+        <Route path="/admin" exact component={Admin} />
+        <Route component={NotFound} />
+      </Switch>
     }
   </main>
 );

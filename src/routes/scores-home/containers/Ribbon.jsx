@@ -7,7 +7,7 @@ import Score from '../components/Score';
 
 const mapStateToProps = ({ scoresRibbon: { data } }) => ({ data });
 
-const ScoresRibbon = ({ data }) => (
+const Ribbon = ({ data }) => (
   data.map(({
     _id,
     homeTeam,
@@ -27,4 +27,4 @@ const ScoresRibbon = ({ data }) => (
   ))
 );
 
-export default connect(mapStateToProps)(ScoresRibbon);
+export default connect(mapStateToProps)(Ribbon);

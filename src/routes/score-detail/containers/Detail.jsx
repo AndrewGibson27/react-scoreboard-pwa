@@ -12,7 +12,7 @@ const mapDispatchToProps = dispatch => ({
   getScoreDetail: (id) => { dispatch(getScoreDetail(id)); },
 });
 
-class ScoreDetail extends Component {
+class Detail extends Component {
   componentDidMount() {
     const { match: { params: { id } } } = this.props;
     this.props.getScoreDetail(id);
@@ -28,4 +28,4 @@ class ScoreDetail extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ScoreDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(Detail);

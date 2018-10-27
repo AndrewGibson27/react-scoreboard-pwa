@@ -1,5 +1,5 @@
-import scoresRibbonFetcher from './ribbon/criticalFetch';
-import scoresListFetcher from './list/criticalFetch';
+import scoresRibbonFetcher from './scores-home/criticalFetch';
+import scoresListFetcher from './scores-list/criticalFetch';
 
 export default [
   {
