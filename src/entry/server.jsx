@@ -20,6 +20,7 @@ import config from '../config';
 import initDb from '../db';
 import schema from '../api';
 import configureStore from '../utils/configureStore';
+import { setError } from '../store/context/actions';
 import getDataFetchers from '../utils/getDataFetchers';
 import doInitialDispatches from '../utils/doInitialDispatches';
 import checkAuthRoutes from '../utils/checkAuthRoutes';
@@ -69,7 +70,9 @@ app.get('*', (req, res) => {
 
     const fetchers = getDataFetchers(req.url, store);
 
-    Promise.all(fetchers).then(() => {
+    Promise.all(fetchers).catch(() => {
+      store.dispatch(setError('Something went terribly wrong!'));
+    }).then(() => {
       const modules = [];
       const context = {};
       const initialTree = (

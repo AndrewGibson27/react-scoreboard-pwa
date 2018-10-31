@@ -11,7 +11,7 @@ import App from '../App'; // eslint-disable-line
 import configureStore from '../utils/configureStore';
 import getDataFetchers from '../utils/getDataFetchers';
 import getMatchedRoutes from '../utils/getMatchedRoutes';
-import { setLoading, setReady } from '../store/context/actions';
+import { setLoading, setReady, setError } from '../store/context/actions';
 
 const history = createHistory();
 const store = configureStore(window.INITIAL_STATE);
@@ -39,6 +39,8 @@ history.listen((location) => {
 
     Promise.all(fetchers).then(() => {
       dispatch(setReady());
+    }).catch(() => {
+      dispatch(setError('Something went terribly wrong!'));
     });
   }
 });
