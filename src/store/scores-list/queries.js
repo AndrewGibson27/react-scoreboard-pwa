@@ -11,6 +11,7 @@ export default `
         name,
         winner
       }
+      _id
       homeScore
       awayScore
       period

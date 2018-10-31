@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import getScoreDetail from '../../../store/score-detail/actions';
 import WithLoaderAndError from '../../../wrappers/WithLoaderAndError';
+import Game from '../components/Game';
 
 const mapStateToProps = ({ scoreDetail }) => ({ scoreDetail });
 
@@ -22,7 +23,7 @@ class Detail extends Component {
     return (
       <WithLoaderAndError
         content={this.props.scoreDetail}
-        render={game => <p>{game.homeTeam.name}</p>}
+        render={game => <Game game={game} />}
       />
     );
   }

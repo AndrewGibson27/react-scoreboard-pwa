@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, Redirect, NavLink } from 'react-router-dom';
+import { Route, Switch, withRouter, Link } from 'react-router-dom';
 import Loadable from 'react-loadable';
 import { connect } from 'react-redux';
 
@@ -31,14 +31,12 @@ const mapStateToProps = ({
     error,
     loading,
     errorMessage,
-    routeRefresh,
   },
 }) => ({
   error,
   errorMessage,
   loading,
   isReady: !error && !loading,
-  routeRefresh, // hack to get custom router working
 });
 
 const App = ({ error, errorMessage, loading, isReady }) => (
@@ -51,14 +49,21 @@ const App = ({ error, errorMessage, loading, isReady }) => (
     }
     {
       isReady &&
-      <Switch>
-        <Route path="/scores" component={ScoresHome} />
-        <Route path="/login" exact component={LogIn} />
-        <Route path="/admin" exact component={Admin} />
-        <Route component={NotFound} />
-      </Switch>
+      <div>
+        <nav>
+          <Link to="/login">Log In</Link>
+          <br />
+          <Link to="/admin">Admin</Link>
+        </nav>
+        <Switch>
+          <Route path="/scores" component={ScoresHome} />
+          <Route path="/login" exact component={LogIn} />
+          <Route path="/admin" exact component={Admin} />
+          <Route component={NotFound} />
+        </Switch>
+      </div>
     }
   </main>
 );
 
-export default connect(mapStateToProps)(App);
+export default withRouter(connect(mapStateToProps)(App));

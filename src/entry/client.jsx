@@ -3,22 +3,19 @@
 import React from 'react';
 import { hydrate } from 'react-dom';
 import { Router } from 'react-router-dom';
+import createHistory from 'history/createBrowserHistory';
 import Loadable from 'react-loadable';
 import { Provider } from 'react-redux';
-import createHistory from 'history/createBrowserHistory';
 
 import App from '../App'; // eslint-disable-line
 import configureStore from '../utils/configureStore';
 import getDataFetchers from '../utils/getDataFetchers';
 import getMatchedRoutes from '../utils/getMatchedRoutes';
-import {
-  setLoading,
-  setReady,
-  setRouteRefresh,
-} from '../store/context/actions';
+import { setLoading, setReady } from '../store/context/actions';
 
 const history = createHistory();
 const store = configureStore(window.INITIAL_STATE);
+window.PREVIOUS_PATHNAME = window.location.pathname;
 
 history.listen((location) => {
   const { pathname } = location;
@@ -26,6 +23,7 @@ history.listen((location) => {
   const matched = getMatchedRoutes(pathname);
 
   let diffed = false;
+  // stolen from: https://ssr.vuejs.org/guide/data.html#client-data-fetching
   // eslint-disable-next-line no-return-assign
   const activated = matched.filter((r, i) => (
     diffed || (diffed = prevMatched[i] !== r)
@@ -38,12 +36,10 @@ history.listen((location) => {
 
   if (fetchers.length) {
     dispatch(setLoading());
+
     Promise.all(fetchers).then(() => {
       dispatch(setReady());
     });
-  } else {
-    dispatch(setRouteRefresh());
-    dispatch(setReady());
   }
 });
 

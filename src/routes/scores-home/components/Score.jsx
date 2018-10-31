@@ -3,13 +3,21 @@
 import React from 'react';
 
 export default ({
-  homeTeam,
-  awayTeam,
+  homeTeam: { name: homeName, winner: homeWinner },
+  awayTeam: { name: awayName, winner: awayWinner },
   homeScore,
   awayScore,
-  period,
 }) => (
-  <div>
-    <h1>Home team: {homeTeam.name}</h1>
-  </div>
+  <table>
+    <tbody>
+      <tr>
+        <th>{homeName}</th>
+        <th>{awayName}</th>
+      </tr>
+      <tr>
+        <td>{homeScore} {homeWinner && <span>(w)</span>}</td>
+        <td>{awayScore} {awayWinner && <span>(w)</span>}</td>
+      </tr>
+    </tbody>
+  </table>
 );

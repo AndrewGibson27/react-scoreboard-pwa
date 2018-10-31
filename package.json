@@ -1,7 +1,7 @@
 {
-  "name": "react-scoreboard-pwa",
+  "name": "react-scoreboard-ssr",
   "version": "1.0.0",
-  "description": "A giant work-in-progress.",
+  "description": "Hand-spun React-driven SSR with code splitting, Redux and GraphQL",
   "repository": "https://github.com/AndrewGibson27/react-scoreboard-pwa.git",
   "author": "Andrew Gibson <atgibson27@gmail.com>",
   "license": "MIT",
