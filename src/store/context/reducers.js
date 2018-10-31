@@ -1,6 +1,6 @@
 const initialState = {
   error: false,
-  errorMessage: '',
+  message: '',
   loading: false,
 };
 
@@ -10,7 +10,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         error: true,
-        errorMessage: action.message,
+        message: action.message,
         loading: false,
       };
     case 'SET_LOADING':

@@ -30,43 +30,38 @@ const mapStateToProps = ({
   context: {
     error,
     loading,
-    errorMessage,
   },
 }) => ({
   error,
-  errorMessage,
   loading,
   isReady: !error && !loading,
 });
 
-const App = ({ error, errorMessage, loading, isReady }) => {
-  console.log('foo');
-  return (
-    <main>
-      {
-        error && <ErrorScreen message={errorMessage} />
-      }
-      {
-        loading && <Loading />
-      }
-      {
-        isReady &&
-        <div>
-          <nav>
-            <Link to="/login">Log In</Link>
-            <br />
-            <Link to="/admin">Admin</Link>
-          </nav>
-          <Switch>
-            <Route path="/scores" component={ScoresHome} />
-            <Route path="/login" exact component={LogIn} />
-            <Route path="/admin" exact component={Admin} />
-            <Route component={NotFound} />
-          </Switch>
-        </div>
-      }
-    </main>
-  );
-};
+const App = ({ error, loading, isReady }) => (
+  <main>
+    {
+      error && <ErrorScreen />
+    }
+    {
+      loading && <Loading />
+    }
+    {
+      isReady &&
+      <div>
+        <nav>
+          <Link to="/login">Log In</Link>
+          <br />
+          <Link to="/admin">Admin</Link>
+        </nav>
+        <Switch>
+          <Route path="/scores" component={ScoresHome} />
+          <Route path="/login" exact component={LogIn} />
+          <Route path="/admin" exact component={Admin} />
+          <Route component={NotFound} />
+        </Switch>
+      </div>
+    }
+  </main>
+);
 
 export default withRouter(connect(mapStateToProps)(App));
