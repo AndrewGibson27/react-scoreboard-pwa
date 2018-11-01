@@ -1,0 +1,1 @@
+{"_id":{"$oid":"5b594748dfece0f74a648a65"},"password":"foobarbaz","email":"foo@bar.com","firstName":"Foo","lastName":"Bar","isAdmin":true}

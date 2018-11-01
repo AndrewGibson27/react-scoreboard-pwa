@@ -1,0 +1,4 @@
+{"_id":{"$oid":"5b3ece953ae754ae184eabc0"},"name":"Denver Broncos","__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"5b3ece9e3ae754ae184eabc1"},"name":"Oakland Raiders","__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"5b3ecea53ae754ae184eabc2"},"name":"Los Angeles Chargers","__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"5b3eceb03ae754ae184eabc3"},"name":"Kansas City Chiefs","__v":{"$numberInt":"0"}}
