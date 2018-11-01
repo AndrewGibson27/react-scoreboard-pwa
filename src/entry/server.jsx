@@ -23,7 +23,6 @@ import configureStore from '../utils/configureStore';
 import { setError } from '../store/context/actions';
 import getDataFetchers from '../utils/getDataFetchers';
 import doInitialDispatches from '../utils/doInitialDispatches';
-import checkAuthRoutes from '../utils/checkAuthRoutes';
 import webpackBaseConfig from '../../webpack/base';
 import webpackDevConfig from '../../webpack/client.dev';
 
@@ -59,62 +58,56 @@ if (isDev) {
 
 app.get('*', (req, res) => {
   const store = configureStore();
-  // eslint-disable-next-line consistent-return
+
   doInitialDispatches(store, req).then(() => {
-    const { isAdmin } = store.getState().user.data;
-    const hasAuthRoutes = checkAuthRoutes(req.url);
-
-    if (!isAdmin && hasAuthRoutes) {
-      return res.redirect('/login');
-    }
-
     const fetchers = getDataFetchers(req.url, store);
 
-    Promise.all(fetchers).catch(() => {
-      store.dispatch(setError('Something went terribly wrong!'));
-    }).then(() => {
-      const modules = [];
-      const context = {};
-      const initialTree = (
-        <Loadable.Capture
-          report={moduleName => modules.push(moduleName)}
-        >
-          <StaticRouter
-            location={req.url}
-            context={context}
+    Promise.all(fetchers)
+      .catch(() => {
+        store.dispatch(setError('Something went terribly wrong!'));
+      }).then(() => {
+        const modules = [];
+        const context = {};
+        const initialTree = (
+          <Loadable.Capture
+            report={moduleName => modules.push(moduleName)}
           >
-            <Provider store={store}>
-              <App />
-            </Provider>
-          </StaticRouter>
-        </Loadable.Capture>
-      );
+            <StaticRouter
+              location={req.url}
+              context={context}
+            >
+              <Provider store={store}>
+                <App />
+              </Provider>
+            </StaticRouter>
+          </Loadable.Capture>
+        );
 
-      const stats = require('../../build/react-loadable.json');
-      const manifest = require('../../build/manifest.json');
+        const stats = require('../../build/react-loadable.json');
+        const manifest = require('../../build/manifest.json');
 
-      const content = ReactDOM.renderToString(initialTree);
-      const syncBundles = manifest.entrypoints.main.js;
-      const asyncBundles = getBundles(stats, modules);
+        const content = ReactDOM.renderToString(initialTree);
+        const syncBundles = manifest.entrypoints.main.js;
+        const asyncBundles = getBundles(stats, modules);
 
-      res.send(`
-        <!DOCTYPE html>
-        <html lang="en">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <meta http-equiv="X-UA-Compatible" content="ie=edge">
-            <title>React Boilerplate</title>
-          </head>
-          <body>
-            <div id="root">${content}</div>
-            <script>window.INITIAL_STATE = ${JSON.stringify(store.getState())};</script>
-            ${asyncBundles.map(script => `<script src="${isDev ? '/' : PUBLIC_PATH}${script.file}"></script>`).join('\n')}
-            ${syncBundles.map(script => `<script src="${isDev ? '/' : PUBLIC_PATH}${script}"></script>`).join('\n')}
-          </body>
-        </html>
-      `);
-    });
+        res.send(`
+          <!DOCTYPE html>
+          <html lang="en">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <meta http-equiv="X-UA-Compatible" content="ie=edge">
+              <title>React Boilerplate</title>
+            </head>
+            <body>
+              <div id="root">${content}</div>
+              <script>window.INITIAL_STATE = ${JSON.stringify(store.getState())};</script>
+              ${asyncBundles.map(script => `<script src="${isDev ? '/' : PUBLIC_PATH}${script.file}"></script>`).join('\n')}
+              ${syncBundles.map(script => `<script src="${isDev ? '/' : PUBLIC_PATH}${script}"></script>`).join('\n')}
+            </body>
+          </html>
+        `);
+      });
   });
 });
 
