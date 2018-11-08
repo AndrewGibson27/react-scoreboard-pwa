@@ -1,11 +1,11 @@
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import contextReducer from '../store/context/reducers';
-import userReducer from '../store/user/reducers';
-import scoresRibbonReducer from '../store/scores-ribbon/reducers';
-import scoresListReducer from '../store/scores-list/reducers';
-import scoreDetailReducer from '../store/score-detail/reducers';
+import contextReducer from '../store/context/reducer';
+import userReducer from '../store/user/reducer';
+import scoresRibbonReducer from '../store/scores-ribbon/reducer';
+import scoresListReducer from '../store/scores-list/reducer';
+import scoreDetailReducer from '../store/score-detail/reducer';
 
 export default function configureStore(initialState) {
   return createStore(
