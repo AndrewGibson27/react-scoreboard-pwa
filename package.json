@@ -1,13 +1,13 @@
 {
   "name": "react-scoreboard-ssr",
-  "version": "1.0.0",
-  "description": "Hand-spun React-driven SSR with code splitting, Redux and GraphQL",
-  "repository": "https://github.com/AndrewGibson27/react-scoreboard-pwa.git",
+  "version": "0.1.0",
+  "description": "Hand-spun React SSR with code splitting, Redux, GraphQL and JWT authentication",
+  "repository": "https://github.com/AndrewGibson27/react-scoreboard-ssr",
   "author": "Andrew Gibson <atgibson27@gmail.com>",
   "license": "MIT",
   "private": false,
   "bugs": {
-    "url": "https://github.com/AndrewGibson27/react-scoreboard-pwa/issues"
+    "url": "https://github.com/AndrewGibson27/react-scoreboard-ssr/issues"
   },
   "scripts": {
     "start": "NODE_ENV=development BABEL_ENV=server babel-node ./src/entry/server.jsx",
