@@ -31,5 +31,8 @@ It demonstrates two kinds of data fetching:
 + `/login/`: If you log in using `foo@bar.com`, password: `foobarbaz`, you will be granted admin access.
 + `/admin/`: Mostly empty, but should redirect you back to `/login/` if you're not an admin.
 
+## Known bugs
++ Sometimes, it takes several back-button clicks to return to a previous route. This is likely because of the custom `<Router />` used in `src/entry/client.jsx`.
+
 ## License
 MIT
