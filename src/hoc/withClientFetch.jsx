@@ -8,7 +8,6 @@ export default function withClientFetch(
 ) {
   return class Wrapper extends Component {
     componentDidMount() {
-      console.log(this.props);
       this.child.getData();
     }
 

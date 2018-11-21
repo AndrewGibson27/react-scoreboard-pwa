@@ -3,7 +3,7 @@ import scoresListFetcher from './scores-list/criticalFetch';
 
 export default [
   {
-    path: '/scores',
+    path: '/scores/',
     requiresAuth: false,
     exact: false,
     criticalFetchers: [
@@ -12,7 +12,7 @@ export default [
   },
 
   {
-    path: '/scores',
+    path: '/scores/',
     requiresAuth: false,
     exact: true,
     criticalFetchers: [
@@ -21,8 +21,22 @@ export default [
   },
 
   {
-    path: '/admin',
+    path: '/scores/:id',
+    requiresAuth: false,
+    exact: true,
+    criticalFetchers: [],
+  },
+
+  {
+    path: '/admin/',
     requiresAuth: true,
+    exact: true,
+    criticalFetchers: [],
+  },
+
+  {
+    path: '/login/',
+    requiresAuth: false,
     exact: true,
     criticalFetchers: [],
   },
